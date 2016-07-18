@@ -27,12 +27,48 @@ namespace Task1.ExpressionTransformator
 		{
 			if (node.NodeType == ExpressionType.Add || node.NodeType == ExpressionType.Subtract)
 			{
-				var parameter = (node.Left.NodeType == ExpressionType.Parameter) ? (ParameterExpression)node.Left : null;
-				var constant = (node.Right.NodeType == ExpressionType.Constant) ? (ConstantExpression)node.Right : null;
+				ParameterExpression leftParam = null, rightParam = null;
+				ConstantExpression leftConstant = null, rightConstant = null;
 
-				if (parameter != null && constant != null && constant.Type == typeof(int) && (int)constant.Value == 1)
+				if (node.Left.NodeType == ExpressionType.Parameter)
 				{
-					return node.NodeType == ExpressionType.Add ? Expression.Increment(parameter) : Expression.Decrement(parameter);
+					leftParam = (ParameterExpression)node.Left;
+				}
+				else if (node.Left.NodeType == ExpressionType.Constant)
+				{
+					leftConstant = (ConstantExpression)node.Left;
+				}
+
+				if (node.Right.NodeType == ExpressionType.Parameter)
+				{
+					rightParam = (ParameterExpression)node.Right;
+				}
+				else if (node.Right.NodeType == ExpressionType.Constant)
+				{
+					rightConstant = (ConstantExpression)node.Right;
+				}
+
+				// (x - 1) to Decrement(x)
+				if (node.NodeType == ExpressionType.Subtract && leftParam != null && rightConstant != null
+					&& rightConstant.Type == typeof(int) && (int)rightConstant.Value == 1)
+				{
+					return Expression.Decrement(leftParam);
+				}
+
+				var param = leftParam ?? rightParam;
+				var constant = leftConstant ?? rightConstant;
+				if (node.NodeType == ExpressionType.Add && param != null && constant != null && constant.Type == typeof(int))
+				{
+					// (x + 1) or (1 + x) to Increment(x)
+					if ((int)constant.Value == 1)
+					{
+						return Expression.Increment(param);
+					}
+					// (-1 + x) to Decrement(x)
+					else if ((int)constant.Value == -1)
+					{
+						return Expression.Decrement(param);
+					}
 				}
 			}
 

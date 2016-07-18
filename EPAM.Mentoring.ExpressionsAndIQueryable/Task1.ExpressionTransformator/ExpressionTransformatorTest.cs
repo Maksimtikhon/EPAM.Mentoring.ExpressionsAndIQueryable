@@ -11,8 +11,7 @@ namespace Task1.ExpressionTransformator
 		[TestMethod]
 		public void AddToIncrementAndSubstractToDecrementTransformTest()
 		{
-			const int N = 1;
-			Expression<Func<int, int>> sourceExpression = (x) => (x + N) * (x - 5) * (x - 1) + (x + 1) * (x - N) * (x + 10);
+			Expression<Func<int, int>> sourceExpression = (x) => (x - 5) * (x - 1) + (x + 1) * (x + 10) + (1 + x) * (-1 + x);
 			var resultExpression = new ExpressionTransformator().ReplaceAddAndSubstract(sourceExpression);
 
 			var result = sourceExpression.Compile().Invoke(2);
