@@ -6,7 +6,7 @@ namespace Task1.ExpressionTransformator
 {
 	public class ExpressionTransformator : ExpressionVisitor
 	{
-		public Dictionary<string, int> _paramDictionary = new Dictionary<string, int>();
+		private Dictionary<string, int> _paramDictionary = new Dictionary<string, int>();
 
 		public T ReplaceAddAndSubstract<T>(T expression) where T : Expression
 		{

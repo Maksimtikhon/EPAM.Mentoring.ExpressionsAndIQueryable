@@ -11,7 +11,7 @@ namespace Task1.ExpressionTransformator
 		[TestMethod]
 		public void AddToIncrementAndSubstractToDecrementTransformTest()
 		{
-			Expression<Func<int, int>> sourceExpression = (x) => (x - 5) * (x - 1) + (x + 1) * (x + 10) + (1 + x) * (-1 + x);
+			Expression<Func<int, int>> sourceExpression = x => (x - 5) * (x - 1) + (x + 1) * (x + 10) + (1 + x) * (-1 + x);
 			var resultExpression = new ExpressionTransformator().ReplaceAddAndSubstract(sourceExpression);
 
 			var result = sourceExpression.Compile().Invoke(2);
@@ -28,15 +28,15 @@ namespace Task1.ExpressionTransformator
 		{
 			var dictionary = new Dictionary<string, int>()
 			{
-				{ "a", 0 },
-				{ "b", 3 },
-				{ "c", -4}
+				{ "a", -4 },
+				{ "b", 0 },
+				{ "c", 2 }
 			};
 
 			Expression<Func<int, int, int, int, int>> sourceExpression = (a, b, c, d) => a + b + c + d + 7;
 			var resultExpression = (Expression <Func<int, int>>)new ExpressionTransformator().ReplaceParameters(sourceExpression, dictionary);
 
-			var result = sourceExpression.Compile().Invoke(0, 3, -4, 1);
+			var result = sourceExpression.Compile().Invoke(-4, 0, 2, 1);
 			var resultAfterTransformation = resultExpression.Compile().Invoke(1);
 
 			Console.WriteLine("Source expression: {0} Result: {1}", sourceExpression, result);
